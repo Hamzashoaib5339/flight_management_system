@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select, func
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
-
+from fastapi.security import HTTPBearer, OAuth2PasswordBearer
 from app.core.database import get_db_session
 from app.core.security import AuthUser, Role, require_roles
 from app.models.flight import Flight, FlightSeatClass, Seat, FlightStatus

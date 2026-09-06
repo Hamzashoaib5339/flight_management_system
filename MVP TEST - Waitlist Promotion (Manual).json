@@ -1,0 +1,126 @@
+{
+  "name": "MVP TEST - Waitlist Promotion (Manual)",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "36d907bc-a2f1-44a2-a041-60fe83b50f60",
+      "name": "Manual Trigger (click to run)",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        272,
+        64
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8000/api/v1/waitlist/process-promotions",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ flight_id: \"FL-101\", fare_class: \"BUSINESS\", claim_window_minutes: 15 }) }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        }
+      },
+      "id": "60d5e988-0afa-4866-9a07-6027a4dfdbcd",
+      "name": "Call process-promotions",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        496,
+        64
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "r1",
+              "name": "status_code",
+              "type": "number",
+              "value": "={{$json.statusCode}}"
+            },
+            {
+              "id": "r2",
+              "name": "promoted_count",
+              "type": "number",
+              "value": "={{$json.body.promoted_count}}"
+            },
+            {
+              "id": "r3",
+              "name": "expired_count",
+              "type": "number",
+              "value": "={{$json.body.expired_count}}"
+            },
+            {
+              "id": "r4",
+              "name": "message",
+              "type": "string",
+              "value": "={{$json.body.message || $json.body.detail}}"
+            },
+            {
+              "id": "r5",
+              "name": "promoted_entries",
+              "type": "string",
+              "value": "={{JSON.stringify($json.body.promoted_entries || [])}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "47fa4cc8-3c80-4ab5-8268-c95ce33a8bb9",
+      "name": "Show Result",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        720,
+        64
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Manual Trigger (click to run)": {
+      "main": [
+        [
+          {
+            "node": "Call process-promotions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call process-promotions": {
+      "main": [
+        [
+          {
+            "node": "Show Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "5136abc9-ab26-4b2d-b652-0df31b7a363c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b11be7172ded9be17ba7769fd3e12d02dd31f5bb9b043354ebcf1eb839861d9e"
+  },
+  "nodeGroups": [],
+  "id": "LjQ1vmSQj2IgKOO9",
+  "tags": []
+}
